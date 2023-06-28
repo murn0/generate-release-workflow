@@ -1,0 +1,38 @@
+name: build-changelog
+on: 
+  workflow_call:
+    inputs:
+      changelog_config_json:
+          required: false
+          type: string
+permissions: {}
+jobs:
+  build-changelog:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      changelog: ${{steps.github_release.outputs.changelog}}
+      LATEST_TAG: ${{steps.check-tag.outputs.LATEST_TAG}}
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 0
+      - name: Get latest tag
+        id: check-tag
+        run: |
+          latestTag=$(git describe --abbrev=0 --tags)
+          echo "LATEST_TAG=$latestTag" >> "$GITHUB_OUTPUT"
+      - run: echo "::error title=Valid git tags not found::$ERROR_MESSAGE"
+        if: failure()
+        env:
+          ERROR_MESSAGE: |
+            e.g. git tag -a v0.0.0 -m 'v0.0.0' $(git rev-list --max-parents=0 HEAD) && git push origin v0.0.0
+      - name: Build Changelog
+        id: github_release
+        if: success()
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+        with:
+          fromTag: ${{steps.check-tag.outputs.LATEST_TAG}}
+          toTag: ${{ github.ref }}
+          configurationJson: |
+            ${{inputs.changelog_config_json}}
