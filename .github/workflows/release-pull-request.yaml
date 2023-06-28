@@ -1,8 +1,14 @@
 name: Generate release
 on:
-  workflow_call
+  workflow_call:
+    inputs:
+      changelog_config_json:
+          required: false
+          type: string
 permissions: {}
 jobs:
   build-changelog:
     uses: ./.github/workflows/build-changelog.yaml
     permissions: {}
+    with:
+      changelog_config_json: ${{inputs.changelog_config_json}}
