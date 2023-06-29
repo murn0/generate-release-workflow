@@ -5,6 +5,14 @@ on:
       changelog:
           required: true
           type: string
+      major_title:
+        description: "Titles that fall under major version upgrades. e.g. ## ⚠️ Breaking Changes"
+        required: true
+        type: string
+      minor_title:
+        description: "Titles that fall under minor version upgrades. e.g. ## 🚀 Features"
+        required: true
+        type: string
     outputs:
       RELEASE_VERSION:
         description: "Next release version name determined automatically"
@@ -26,8 +34,8 @@ jobs:
         run: |
           set -eu
           changelog="${{inputs.changelog}}"
-          search_features="## 🚀 Features"
-          search_breaking_changes="## ⚠️ Breaking Changes"
+          search_features="${{inputs.minor_title}}"
+          search_breaking_changes="${{inputs.major_title}}"
 
           if [[ "$changelog" == *"$search_features"* ]]; then
               release_level="minor"
