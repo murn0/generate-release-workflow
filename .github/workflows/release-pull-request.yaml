@@ -5,6 +5,15 @@ on:
       changelog_config_json:
         required: false
         type: string
+      major_title:
+        description: "Titles that fall under major version upgrades. e.g. ## ⚠️ Breaking Changes"
+        required: true
+        type: string
+      minor_title:
+        description: "Titles that fall under minor version upgrades. e.g. ## 🚀 Features"
+        required: true
+        type: string
+
 permissions: {}
 jobs:
   build-changelog:
@@ -20,3 +29,5 @@ jobs:
       - build-changelog
     with:
       changelog: ${{needs.build-changelog.outputs.changelog}}
+      major_title: ${{inputs.major_title}}
+      minor_title: ${{inputs.minor_title}}
