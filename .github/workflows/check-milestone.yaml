@@ -5,6 +5,10 @@ on:
       RELEASE_VERSION:
         required: true
         type: string
+    outputs:
+      MILESTONE_NUMBER:
+        description: "Milestone number of the same title as the new release version"
+        value: ${{jobs.check-milestone.outputs.MILESTONE_NUMBER}}
 
 permissions: {}
 
@@ -13,14 +17,25 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+    outputs:
+      MILESTONE_NUMBER: ${{steps.milestone.outputs.MILESTONE_NUMBER}}
     steps:
       - name: Check to see if milestones exist and create them
+        id: milestone
         run: |
           set -eu
+
           milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
+          #=> $RELEASE_VERSIONと同じタイトルのマイルストーンが存在しない場合は作成する
           if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
             gh api -X POST repos/${{github.repository}}/milestones -f title=$RELEASE_VERSION
+            #=> マイルストーンを新規作成した場合は$milestonesを更新（更新しないと下記でマイルストーン番号が取得できないため）
+            milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
           fi
+
+          milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
+          echo $milestone_number
+          echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{github.token}}
           RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
