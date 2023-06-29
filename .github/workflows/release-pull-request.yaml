@@ -3,8 +3,8 @@ on:
   workflow_call:
     inputs:
       changelog_config_json:
-          required: false
-          type: string
+        required: false
+        type: string
 permissions: {}
 jobs:
   build-changelog:
@@ -12,3 +12,11 @@ jobs:
     permissions: {}
     with:
       changelog_config_json: ${{inputs.changelog_config_json}}
+  bump-version:
+    uses: ./.github/workflows/bump-version.yaml
+    permissions: {}
+    if: success()
+    needs:
+      - build-changelog
+    with:
+      changelog: ${{needs.build-changelog.outputs.changelog}}

@@ -5,6 +5,13 @@ on:
       changelog_config_json:
           required: false
           type: string
+    outputs:
+      changelog:
+        description: "Changelog markdown text."
+        value: ${{jobs.build-changelog.outputs.changelog}}
+      LATEST_TAG:
+        description: "The most recent tag name at the time the action was taken"
+        value: ${{jobs.build-changelog.outputs.LATEST_TAG}}
 permissions: {}
 jobs:
   build-changelog:

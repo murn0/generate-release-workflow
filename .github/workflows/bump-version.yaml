@@ -1,0 +1,43 @@
+name: bump-version
+on: 
+  workflow_call:
+    inputs:
+      changelog:
+          required: true
+          type: string
+    outputs:
+      RELEASE_VERSION:
+        description: "Next release version name determined automatically"
+        value: ${{jobs.bump-version.outputs.RELEASE_VERSION}}
+permissions: {}
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: success()
+    outputs:
+      RELEASE_VERSION: ${{steps.set-version.outputs.RELEASE_VERSION}}
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
+        with:
+          aqua_version: v2.8.0
+      - name: Check bump level
+        run: |
+          set -eu
+          changelog="${{inputs.changelog}}"
+          search_features="## 🚀 Features"
+          search_breaking_changes="## ⚠️ Breaking Changes"
+
+          if [[ "$changelog" == *"$search_features"* ]]; then
+              release_level="minor"
+          elif [[ "$changelog" == *"$search_breaking_changes"* ]]; then
+              release_level="major"
+          else
+              release_level="patch"
+          fi
+
+          echo "level=$release_level" >> $GITHUB_ENV
+      - name: Set release version for output.
+        id: set-version
+        run: echo "RELEASE_VERSION=$(svu $level)" >> $GITHUB_OUTPUT
