@@ -13,6 +13,11 @@ on:
         description: "Titles that fall under minor version upgrades. e.g. ## 🚀 Features"
         required: true
         type: string
+    secrets:
+      gh_app_id:
+        required: true
+      gh_app_private_key:
+        required: true
 
 permissions: {}
 jobs:
@@ -47,8 +52,8 @@ jobs:
       - bump-version
       - check-milestone
     secrets:
-      gh_app_id: ${{secrets.GH_APP_ID}}
-      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
+      gh_app_id: ${{secrets.gh_app_id}}
+      gh_app_private_key: ${{secrets.gh_app_private_key}}
     with:
       CHANGELOG_HEADER: >-
         [Pull Requests](https://github.com/${{github.repository}}/pulls?q=is%3Apr+milestone%3A${{needs.bump-version.outputs.RELEASE_VERSION}}) |
