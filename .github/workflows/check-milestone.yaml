@@ -1,0 +1,26 @@
+name: check-milestone
+on: 
+  workflow_call:
+    inputs:
+      RELEASE_VERSION:
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  check-milestone:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Check to see if milestones exist and create them
+        run: |
+          set -eu
+          milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
+          if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
+            gh api -X POST repos/${{github.repository}}/milestones -f title=$RELEASE_VERSION
+          fi
+        env:
+          GITHUB_TOKEN: ${{github.token}}
+          RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}

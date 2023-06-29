@@ -3,8 +3,8 @@ on:
   workflow_call:
     inputs:
       changelog:
-          required: true
-          type: string
+        required: true
+        type: string
       major_title:
         description: "Titles that fall under major version upgrades. e.g. ## ⚠️ Breaking Changes"
         required: true
