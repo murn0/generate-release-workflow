@@ -31,3 +31,11 @@ jobs:
       changelog: ${{needs.build-changelog.outputs.changelog}}
       major_title: ${{inputs.major_title}}
       minor_title: ${{inputs.minor_title}}
+  check-milestone:
+    uses: ./.github/workflows/check-milestone.yaml
+    permissions:
+      issues: write # For create milestone
+    needs:
+      - bump-version
+    with:
+      RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
