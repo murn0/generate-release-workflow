@@ -39,3 +39,21 @@ jobs:
       - bump-version
     with:
       RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
+  generate-release-pull-request:
+    uses: ./.github/workflows/generate-release-pull-request.yaml
+    permissions: {}
+    needs: 
+      - build-changelog
+      - bump-version
+      - check-milestone
+    secrets:
+      gh_app_id: ${{secrets.GH_APP_ID}}
+      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
+    with:
+      CHANGELOG_HEADER: >-
+        [Pull Requests](https://github.com/${{github.repository}}/pulls?q=is%3Apr+milestone%3A${{needs.bump-version.outputs.RELEASE_VERSION}}) |
+        [Issues](https://github.com/${{github.repository}}/issues?q=is%3Aissue+milestone%3A${{needs.bump-version.outputs.RELEASE_VERSION}}) |
+        [Milestone](https://github.com/${{github.repository}}/milestone/${{needs.check-milestone.outputs.MILESTONE_NUMBER}}) |
+        https://github.com/${{github.repository}}/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
+      CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
+      RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
