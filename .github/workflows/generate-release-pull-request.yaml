@@ -14,6 +14,9 @@ on:
       REVIEWER:
         required: false
         type: string
+      LABELS:
+        required: false
+        type: string
     secrets:
       gh_app_id:
         required: true
@@ -51,11 +54,11 @@ jobs:
           if [[ -z "$SAME_PR_COUNT" ]]; then
             #=> 同じブランチ名のプルリクエストがない場合はプルリクエストを新規作成する
             ghcp empty-commit -r $GITHUB_REPOSITORY -b release/$RELEASE_VERSION -m 'chore: empty commit to open follow up pull request'
-            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION ${{env.CURRENT_DATETIME}}" --body "$CHANGELOG" --reviewer "${{inputs.REVIEWER}}" --milestone "$RELEASE_VERSION" --label Release
+            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION ${{env.CURRENT_DATETIME}}" --body "$CHANGELOG" --reviewer "${{inputs.REVIEWER}}" --milestone "$RELEASE_VERSION" --label "${{inputs.LABELS}}"
           else
             #=> 同じブランチ名のプルリクエストがある場合は該当のプルリクエストを編集する
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION ${{env.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" --add-label Release
+            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION ${{env.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" --add-label "${{inputs.LABELS}}"
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
