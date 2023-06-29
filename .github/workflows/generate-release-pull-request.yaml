@@ -1,0 +1,75 @@
+name: Generate release pull request
+on:
+  workflow_call:
+    inputs:
+      CHANGELOG_HEADER:
+        required: true
+        type: string
+      CHANGELOG:
+        required: true
+        type: string
+      RELEASE_VERSION:
+        required: true
+        type: string
+      REVIEWER:
+        required: false
+        type: string
+    secrets:
+      gh_app_id:
+        required: true
+      gh_app_private_key:
+        required: true
+
+permissions: {}
+
+jobs:
+  generate-pull-request:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: aquaproj/aqua-installer@294926f94b4233f202a2f03875c604f840cfed70 # v2.1.1
+        with:
+          aqua_version: v2.8.0
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
+        with:
+          app_id: ${{secrets.gh_app_id}}
+          private_key: ${{secrets.gh_app_private_key}}
+      - name: Set current datetime
+        run: echo "CURRENT_DATETIME=$(date +"%Y-%m-%dT%H:%M:%S%z")" >> $GITHUB_ENV
+        env:
+          TZ: 'Asia/Tokyo'
+      - name: Generate pull request
+        run: |
+          set -eu
+
+          ghcp -v
+
+          SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
+          if [[ -z "$SAME_PR_COUNT" ]]; then
+            #=> 同じブランチ名のプルリクエストがない場合はプルリクエストを新規作成する
+            ghcp empty-commit -r $GITHUB_REPOSITORY -b release/$RELEASE_VERSION -m 'chore: empty commit to open follow up pull request'
+            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION ${{env.CURRENT_DATETIME}}" --body "$CHANGELOG" --reviewer "${{inputs.REVIEWER}}" --milestone "$RELEASE_VERSION" --label Release
+          else
+            #=> 同じブランチ名のプルリクエストがある場合は該当のプルリクエストを編集する
+            SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
+            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION ${{env.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" --add-label Release
+          fi
+        env:
+          GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
+          CHANGELOG: |-
+            ${{inputs.CHANGELOG_HEADER}}
+            ---
+
+
+            ${{inputs.CHANGELOG}}
+
+            ---
+            > **Note**
+            > This release was published on ${{env.CURRENT_DATETIME}}
+
+            > **Note**
+            > Commit SHA is ${{github.sha}}
+          RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
