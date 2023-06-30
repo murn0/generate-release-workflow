@@ -71,6 +71,8 @@ jobs:
 
           echo $pr_edit_label_options
           echo "PR_EDIT_LABEL_OPTIONS=$pr_edit_label_options" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{github.token}}
       - name: Generate pull request
         run: |
           set -eu
