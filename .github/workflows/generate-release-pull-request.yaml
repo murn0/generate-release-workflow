@@ -47,7 +47,7 @@ jobs:
       - name: Check and Set pull request label options
         id: set-label
         run: |
-          labels=${{inputs.LABELS}}
+          labels="${{inputs.LABELS}}"
           # カンマで分割して配列に格納
           IFS=',' read -r -a labels <<< "$label_names"
 
