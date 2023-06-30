@@ -13,6 +13,10 @@ on:
         description: "Titles that fall under minor version upgrades. e.g. ## 🚀 Features"
         required: true
         type: string
+      labels:
+        description: ""
+        required: false
+        type: string
     secrets:
       gh_app_id:
         required: true
@@ -62,3 +66,4 @@ jobs:
         https://github.com/${{github.repository}}/compare/${{needs.build-changelog.outputs.LATEST_TAG}}...${{needs.bump-version.outputs.RELEASE_VERSION}}
       CHANGELOG: ${{needs.build-changelog.outputs.changelog}}
       RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
+      LABELS: ${{inputs.labels}}
