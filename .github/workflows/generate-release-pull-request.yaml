@@ -74,6 +74,30 @@ jobs:
           echo "PR_EDIT_LABEL_OPTIONS=$pr_edit_label_options" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{github.token}}
+      - name: Set pull request reviewers
+        id: set-reviewers
+        run: |
+          reviewer_names="${{inputs.REVIEWERS}}"
+          # カンマで分割して配列に格納
+          IFS=',' read -r -a reviewers <<< "$reviewer_names"
+
+          pr_create_reviewer_options=''
+          pr_edit_reviewer_options=''
+          for reviewer in "${reviewers[@]}"; do
+              echo "$reviewer"
+              # 不要な先頭および末尾の空白を削除しつつ表示
+              reviewer_name=$(echo "$reviewer" | awk '{$1=$1};1')
+              echo $reviewer_name
+              
+              pr_create_reviewer_options+="--label '${reviewer_name}' "
+              pr_edit_reviewer_options+="--add-label '${reviewer_name}' "
+          done
+
+          echo $pr_create_reviewer_options
+          echo "PR_CREATE_REVIEWER_OPTIONS=$pr_create_reviewer_options" >> $GITHUB_OUTPUT
+
+          echo $pr_edit_reviewer_options
+          echo "PR_EDIT_REVIEWER_OPTIONS=$pr_edit_reviewer_options" >> $GITHUB_OUTPUT
       - name: Generate pull request
         run: |
           set -eu
@@ -84,11 +108,11 @@ jobs:
           if [[ -z "$SAME_PR_COUNT" ]]; then
             #=> 同じブランチ名のプルリクエストがない場合はプルリクエストを新規作成する
             ghcp empty-commit -r $GITHUB_REPOSITORY -b release/$RELEASE_VERSION -m 'chore: empty commit to open follow up pull request'
-            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" ${{steps.set-label.outputs.PR_CREATE_LABEL_OPTIONS}}
+            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" ${{steps.set-label.outputs.PR_CREATE_LABEL_OPTIONS}} ${{steps.set-reviewers.outputs.PR_CREATE_REVIEWER_OPTIONS}}
           else
             #=> 同じブランチ名のプルリクエストがある場合は該当のプルリクエストを編集する
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" ${{steps.set-label.outputs.PR_EDIT_LABEL_OPTIONS}}
+            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" ${{steps.set-label.outputs.PR_EDIT_LABEL_OPTIONS}} ${{steps.set-reviewers.outputs.PR_EDIT_REVIEWER_OPTIONS}}
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
