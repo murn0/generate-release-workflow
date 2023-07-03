@@ -89,8 +89,8 @@ jobs:
               reviewer_name=$(echo "$reviewer" | awk '{$1=$1};1')
               echo $reviewer_name
               
-              pr_create_reviewer_options+="--label '${reviewer_name}' "
-              pr_edit_reviewer_options+="--add-label '${reviewer_name}' "
+              pr_create_reviewer_options+="--reviewer '${reviewer_name}' "
+              pr_edit_reviewer_options+="--add-reviewer '${reviewer_name}' "
           done
 
           echo $pr_create_reviewer_options
