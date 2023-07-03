@@ -48,4 +48,6 @@ jobs:
           echo "level=$release_level" >> $GITHUB_ENV
       - name: Set release version for output.
         id: set-version
-        run: echo "RELEASE_VERSION=$(svu $level)" >> $GITHUB_OUTPUT
+        run: |
+          echo "RELEASE_VERSION=$(svu $level)" >> $GITHUB_OUTPUT
+          echo "::notice::Release versino is $RELEASE_VERSION"

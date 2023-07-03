@@ -107,12 +107,27 @@ jobs:
           SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
           if [[ -z "$SAME_PR_COUNT" ]]; then
             #=> 同じブランチ名のプルリクエストがない場合はプルリクエストを新規作成する
-            ghcp empty-commit -r $GITHUB_REPOSITORY -b release/$RELEASE_VERSION -m 'chore: empty commit to open follow up pull request'
-            gh pr create -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" ${{steps.set-label.outputs.PR_CREATE_LABEL_OPTIONS}} ${{steps.set-reviewers.outputs.PR_CREATE_REVIEWER_OPTIONS}}
+            ghcp empty-commit \
+              -r $GITHUB_REPOSITORY \
+              -b release/$RELEASE_VERSION \
+              -m 'chore: empty commit to open follow up pull request'
+            gh pr create \
+              -B $GITHUB_REF_NAME \
+              -H release/$RELEASE_VERSION \
+              --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" \
+              --body "$CHANGELOG" \
+              --milestone "$RELEASE_VERSION" \
+              ${{steps.set-label.outputs.PR_CREATE_LABEL_OPTIONS}} \
+              ${{steps.set-reviewers.outputs.PR_CREATE_REVIEWER_OPTIONS}}
           else
             #=> 同じブランチ名のプルリクエストがある場合は該当のプルリクエストを編集する
             SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" --body "$CHANGELOG" --milestone "$RELEASE_VERSION" ${{steps.set-label.outputs.PR_EDIT_LABEL_OPTIONS}} ${{steps.set-reviewers.outputs.PR_EDIT_REVIEWER_OPTIONS}}
+            gh pr edit $SAME_PR_NUMBER \
+              --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" \
+              --body "$CHANGELOG" \
+              --milestone "$RELEASE_VERSION" \
+              ${{steps.set-label.outputs.PR_EDIT_LABEL_OPTIONS}} \
+              ${{steps.set-reviewers.outputs.PR_EDIT_REVIEWER_OPTIONS}}
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
@@ -124,9 +139,4 @@ jobs:
             ${{inputs.CHANGELOG}}
 
             ---
-            > **Note**
-            > This release was published on ${{steps.datetime.outputs.CURRENT_DATETIME}}
-
-            > **Note**
-            > Commit SHA is ${{github.sha}}
           RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
