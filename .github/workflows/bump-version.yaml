@@ -33,7 +33,7 @@ jobs:
       - name: Check bump level
         run: |
           set -eu
-          changelog="${{inputs.changelog}}"
+          changelog=$(echo "${{inputs.changelog}}" | sed 's/\\/\\\\/g')
           search_features="${{inputs.minor_title}}"
           search_breaking_changes="${{inputs.major_title}}"
 
