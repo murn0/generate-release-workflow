@@ -11,9 +11,9 @@ on:
       RELEASE_VERSION:
         required: true
         type: string
-      # REVIEWER:
-      #   required: false
-      #   type: string
+      REVIEWERS:
+        required: false
+        type: string
       LABELS:
         required: false
         type: string
