@@ -110,7 +110,7 @@ jobs:
             ghcp empty-commit \
               -r $GITHUB_REPOSITORY \
               -b release/$RELEASE_VERSION \
-              -m 'chore: empty commit to open follow up pull request'
+              -m "chore: Open pull request for release $RELEASE_VERSION"
             gh pr create \
               -B $GITHUB_REF_NAME \
               -H release/$RELEASE_VERSION \
