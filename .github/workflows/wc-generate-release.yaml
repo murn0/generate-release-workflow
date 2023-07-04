@@ -54,3 +54,13 @@ jobs:
 
             > **Note**
             > Commit SHA is ${{github.sha}}
+      - name: Close milestone
+        run: |
+          set -eu
+
+          milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
+          milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"${HEAD_REF#release/}\")) | first | .number")
+          gh api -X PATCH repos/${{github.repository}}/milestones/${milestone_number} -f state=close
+        env:
+          GITHUB_TOKEN: ${{github.token}}
+          HEAD_REF: ${{github.event.pull_request.head.ref}}
