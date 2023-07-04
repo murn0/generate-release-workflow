@@ -54,6 +54,11 @@ jobs:
 
             > **Note**
             > Commit SHA is ${{github.sha}}
+  close-milestone:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
       - name: Close milestone
         run: |
           set -eu
