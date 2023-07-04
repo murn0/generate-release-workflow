@@ -52,6 +52,7 @@ on:
       labels:
         required: false
         type: string
+        default: 'release'
   workflow_call:
     inputs:
       changelog_config_json:
