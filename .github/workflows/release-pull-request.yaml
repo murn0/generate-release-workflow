@@ -5,6 +5,39 @@ on:
       changelog_config_json:
         required: false
         type: string
+        default: |
+            {
+              "categories": [
+                {
+                    "title": "## ⚠️ Breaking changes",
+                    "labels": ["breaking change"]
+                },
+                {
+                    "title": "## Features",
+                    "labels": [
+                      "feature",
+                      "enhancement"
+                    ]
+                },
+                {
+                    "title": "## Fixes",
+                    "labels": ["fix"]
+                },
+                {
+                    "title": "## Tests",
+                    "labels": ["test"]
+                },
+                {
+                    "title": "## Others",
+                    "labels": []
+                },
+                {
+                    "title": "## Dependencies",
+                    "labels": ["dependencies"]
+                }
+              ],
+              "template": "#{{CHANGELOG}}"
+            }
       major_title:
         required: true
         type: string
