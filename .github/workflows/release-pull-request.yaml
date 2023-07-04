@@ -3,6 +3,7 @@ on:
   workflow_call:
     inputs:
       changelog_config_json:
+        description: "Configuration files specified in the official(https://github.com/mikepenz/release-changelog-builder-action#configuration)"
         required: false
         type: string
       major_title:
