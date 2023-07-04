@@ -1,4 +1,4 @@
-name: Generate release pull request
+name: Auto Bump and generate PR
 on:
   workflow_call:
     inputs:
