@@ -49,6 +49,7 @@ jobs:
       - name: Set release version for output.
         id: set-version
         run: |
+          svu
           next_version=$(svu $level)
           echo "RELEASE_VERSION=$next_version" >> $GITHUB_OUTPUT
           echo "::notice::Next release is $level update, version $next_version"
