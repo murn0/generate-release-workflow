@@ -10,7 +10,7 @@ on:
         required: true
         type: string
       minor_title:
-        description: "Titles that fall under minor version upgrades. e.g. ## 🚀 Features"
+        description: "Titles that fall under minor version upgrades. e.g. ## Features"
         required: true
         type: string
     outputs:

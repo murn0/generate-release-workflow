@@ -2,7 +2,7 @@ name: Generate release
 on:
   workflow_call:
     inputs:
-      DRAFT:
+      draft:
         required: true
         default: false
         type: boolean
@@ -35,7 +35,7 @@ jobs:
           set -eu
 
           draft_option=''
-          if [ ${{inputs.DRAFT}} = true ]; then
+          if [ ${{inputs.draft}} = true ]; then
             draft_option+='--draft'
           fi
           
