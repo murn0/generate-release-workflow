@@ -1,5 +1,24 @@
 name: Auto Bump and generate PR
 on:
+  workflow_dispatch:
+    inputs:
+      changelog_config_json:
+        required: false
+        type: string
+      major_title:
+        required: true
+        type: string
+        default: '## ⚠️ Breaking Changes'
+      minor_title:
+        required: true
+        type: string
+        default: '## Features'
+      reviewers:
+        required: false
+        type: string
+      labels:
+        required: false
+        type: string
   workflow_call:
     inputs:
       changelog_config_json:

@@ -6,6 +6,39 @@ on:
           description: "Configuration files specified in the official(https://github.com/mikepenz/release-changelog-builder-action#configuration)"
           required: false
           type: string
+          default: |
+            {
+              "categories": [
+                {
+                    "title": "## ⚠️ Breaking changes",
+                    "labels": ["breaking change"]
+                },
+                {
+                    "title": "## Features",
+                    "labels": [
+                      "feature",
+                      "enhancement"
+                    ]
+                },
+                {
+                    "title": "## Fixes",
+                    "labels": ["fix"]
+                },
+                {
+                    "title": "## Tests",
+                    "labels": ["test"]
+                },
+                {
+                    "title": "## Others",
+                    "labels": []
+                },
+                {
+                    "title": "## Dependencies",
+                    "labels": ["dependencies"]
+                }
+              ],
+              "template": "#{{CHANGELOG}}"
+            }
     outputs:
       changelog:
         description: "Changelog markdown text."
