@@ -1,5 +1,24 @@
-name: Generate release
+name: Auto Bump and generate PR
 on:
+  workflow_dispatch:
+    inputs:
+      changelog_config_json:
+        required: false
+        type: string
+      major_title:
+        required: true
+        type: string
+        default: '## ⚠️ Breaking Changes'
+      minor_title:
+        required: true
+        type: string
+        default: '## Features'
+      reviewers:
+        required: false
+        type: string
+      labels:
+        required: false
+        type: string
   workflow_call:
     inputs:
       changelog_config_json:
@@ -64,12 +83,12 @@ on:
 permissions: {}
 jobs:
   build-changelog:
-    uses: ./.github/workflows/build-changelog.yaml
+    uses: ./.github/workflows/wc-build-changelog.yaml
     permissions: {}
     with:
       changelog_config_json: ${{inputs.changelog_config_json}}
   bump-version:
-    uses: ./.github/workflows/bump-version.yaml
+    uses: ./.github/workflows/wc-bump-version.yaml
     permissions: {}
     if: success()
     needs:
@@ -79,7 +98,7 @@ jobs:
       major_title: ${{inputs.major_title}}
       minor_title: ${{inputs.minor_title}}
   check-milestone:
-    uses: ./.github/workflows/check-milestone.yaml
+    uses: ./.github/workflows/wc-check-milestone.yaml
     permissions:
       issues: write # For create milestone
     needs:
@@ -87,7 +106,7 @@ jobs:
     with:
       RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
   generate-release-pull-request:
-    uses: ./.github/workflows/generate-release-pull-request.yaml
+    uses: ./.github/workflows/wc-generate-release-pull-request.yaml
     permissions: {}
     needs: 
       - build-changelog

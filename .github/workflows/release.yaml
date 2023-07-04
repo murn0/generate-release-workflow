@@ -1,23 +1,20 @@
 name: Generate release
 on:
-  workflow_call:
-    inputs:
-      draft:
-        required: true
-        type: boolean
-    secrets:
-      gh_app_id:
-        required: true
-      gh_app_private_key:
-        required: true
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
 
 permissions: {}
 jobs:
   generate-release:
-    uses: ./.github/workflows/generate-release.yaml
+    uses: ./.github/workflows/wc-generate-release.yaml
     permissions: {}
-    secrets:
-      gh_app_id: ${{secrets.gh_app_id}}
-      gh_app_private_key: ${{secrets.gh_app_private_key}}
+    if: |
+      github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     with:
-      DRAFT: ${{inputs.draft}}
+      draft: true
+    secrets:
+      gh_app_id: ${{secrets.GH_APP_ID}}
+      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
