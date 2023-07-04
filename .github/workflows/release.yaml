@@ -10,7 +10,8 @@ permissions: {}
 jobs:
   generate-release:
     uses: ./.github/workflows/wc-generate-release.yaml
-    permissions: {}
+    permissions:
+      issues: write
     if: |
       github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     with:
