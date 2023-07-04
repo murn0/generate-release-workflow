@@ -48,11 +48,11 @@ on:
         required: true
         type: string
       reviewers:
-        description: ""
+        description: "Specify the reviewers name to be associated with the pull request. e.g. murn0"
         required: false
         type: string
       labels:
-        description: ""
+        description: "Specify the labels name to be associated with the pull request. e.g. Release, feature"
         required: false
         type: string
     secrets:
