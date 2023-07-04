@@ -20,7 +20,7 @@ jobs:
     outputs:
       MILESTONE_NUMBER: ${{steps.milestone.outputs.MILESTONE_NUMBER}}
     steps:
-      - name: Check to see if milestones exist and create them
+      - name: Check to see if milestones exist and create or reopen them
         id: milestone
         run: |
           set -eu
@@ -31,6 +31,10 @@ jobs:
             gh api -X POST repos/${{github.repository}}/milestones -f title=$RELEASE_VERSION
             #=> マイルストーンを新規作成した場合は$milestonesを更新（更新しないと下記でマイルストーン番号が取得できないため）
             milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
+          elif $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"); then
+            #=> マイルストーンが存在するがcloseの場合は再度openする
+            milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
+            gh api -X PATCH repos/${{github.repository}}/milestones/${milestone_number} -f state=open
           fi
 
           milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
