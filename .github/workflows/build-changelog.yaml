@@ -23,7 +23,7 @@ on:
                 {
                     "title": "## Tests",
                     "labels": ["test"]
-                }
+                },
                 {
                     "title": "## Others",
                     "labels": ["other"]
