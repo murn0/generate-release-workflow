@@ -40,15 +40,13 @@ on:
               "template": "#{{CHANGELOG}}"
             }
       major_title:
-        description: "Titles that fall under major version upgrades"
+        description: "Titles that fall under major version upgrades. e.g. ## ⚠️ Breaking Changes"
         required: true
         type: string
-        default: "## ⚠️ Breaking Changes"
       minor_title:
-        description: "Titles that fall under minor version upgrades"
+        description: "Titles that fall under minor version upgrades. e.g. ## 🚀 Features"
         required: true
         type: string
-        default: "## Features"
       reviewers:
         description: ""
         required: false
