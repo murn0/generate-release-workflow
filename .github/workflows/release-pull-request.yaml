@@ -135,9 +135,12 @@ jobs:
     uses: ./.github/workflows/wc-check-milestone.yaml
     permissions:
       issues: write # For create milestone
+      pull-requests: write # For pull requests to milestone
     needs:
+      - build-changelog
       - bump-version
     with:
+      pull_requests: ${{needs.build-changelog.outputs.pull_requests}}
       RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
   generate-release-pull-request:
     uses: ./.github/workflows/wc-generate-release-pull-request.yaml

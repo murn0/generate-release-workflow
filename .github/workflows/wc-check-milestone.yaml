@@ -1,7 +1,10 @@
 name: check-milestone
-on: 
+on:
   workflow_call:
     inputs:
+      pull_requests:
+        required: true
+        type: string
       RELEASE_VERSION:
         required: true
         type: string
@@ -40,6 +43,23 @@ jobs:
           milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
           echo $milestone_number
           echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{github.token}}
+          RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
+  add-milestone:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - run: |
+          pull_requests=${{inputs.pull_requests}}
+          
+          # カンマで分割して配列に格納
+          IFS=',' read -ra pr_array <<< "$pull_requests"
+
+          for pr_number in "${pr_array[@]}"; do
+              gh pr -R ${{github.repository}} edit $pr_number --milestone $RELEASE_VERSION
+          done
         env:
           GITHUB_TOKEN: ${{github.token}}
           RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
