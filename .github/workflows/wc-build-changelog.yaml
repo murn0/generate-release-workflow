@@ -43,6 +43,9 @@ on:
       changelog:
         description: "Changelog markdown text."
         value: ${{jobs.build-changelog.outputs.changelog}}
+      pull_requests:
+        description: "Changelog pull request numbers."
+        value: ${{jobs.build-changelog.outputs.pull_requests}}
       LATEST_TAG:
         description: "The most recent tag name at the time the action was taken"
         value: ${{jobs.build-changelog.outputs.LATEST_TAG}}
@@ -53,6 +56,7 @@ jobs:
     permissions: {}
     outputs:
       changelog: ${{steps.github_release.outputs.changelog}}
+      pull_requests: ${{steps.github_release.outputs.pull_requests}}
       LATEST_TAG: ${{steps.check-tag.outputs.LATEST_TAG}}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
