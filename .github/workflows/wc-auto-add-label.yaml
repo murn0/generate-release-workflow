@@ -1,4 +1,4 @@
-name: Generate release workflow
+name: Pull request auto add label workflow
 on:
   workflow_call:
     secrets:
@@ -9,7 +9,7 @@ on:
 
 permissions: {}
 jobs:
-  auto-pull_request-add-label:
+  auto-add-label:
     runs-on: ubuntu-latest
     permissions: {}
     if: |
