@@ -58,7 +58,7 @@ jobs:
           IFS=',' read -ra pr_array <<< "$pull_requests"
 
           for pr_number in "${pr_array[@]}"; do
-              gh pr -R ${{github.repository}} edit $pr_number --milestone $RELEASE_VERSION
+              gh pr -R ${{github.repository}} edit "$pr_number" --milestone "$RELEASE_VERSION"
           done
         env:
           GITHUB_TOKEN: ${{github.token}}
