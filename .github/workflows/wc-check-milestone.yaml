@@ -30,19 +30,19 @@ jobs:
 
           milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
           #=> $RELEASE_VERSIONと同じタイトルのマイルストーンが存在しない場合は作成する
-          if ! $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"); then
-            gh api -X POST repos/${{github.repository}}/milestones -f title=$RELEASE_VERSION
+          if ! echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"; then
+            gh api -X POST repos/${{github.repository}}/milestones -f title="$RELEASE_VERSION"
             #=> マイルストーンを新規作成した場合は$milestonesを更新（更新しないと下記でマイルストーン番号が取得できないため）
             milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
-          elif $(echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"); then
+          elif echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"; then
             #=> マイルストーンが存在するがcloseの場合は再度openする
             milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
-            gh api -X PATCH repos/${{github.repository}}/milestones/${milestone_number} -f state=open
+            gh api -X PATCH repos/${{github.repository}}/milestones/"$milestone_number" -f state=open
           fi
 
           milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
-          echo $milestone_number
-          echo "MILESTONE_NUMBER=$milestone_number" >> $GITHUB_OUTPUT
+          echo "$milestone_number"
+          echo "MILESTONE_NUMBER=$milestone_number" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{github.token}}
           RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
@@ -58,7 +58,7 @@ jobs:
           IFS=',' read -ra pr_array <<< "$pull_requests"
 
           for pr_number in "${pr_array[@]}"; do
-              gh pr -R ${{github.repository}} edit $pr_number --milestone $RELEASE_VERSION
+              gh pr -R ${{github.repository}} edit "$pr_number" --milestone "$RELEASE_VERSION"
           done
         env:
           GITHUB_TOKEN: ${{github.token}}

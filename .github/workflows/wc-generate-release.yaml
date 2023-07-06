@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       draft:
-        required: true
+        required: false
         default: false
         type: boolean
     secrets:
@@ -27,7 +27,7 @@ jobs:
           private_key: ${{secrets.gh_app_private_key}}
       - name: Set current datetime
         id: datetime
-        run: echo "CURRENT_DATETIME=$(date +"%Y-%m-%dT%H:%M:%S%z")" >> $GITHUB_OUTPUT
+        run: echo "CURRENT_DATETIME=$(date +"%Y-%m-%dT%H:%M:%S%z")" >> "$GITHUB_OUTPUT"
         env:
           TZ: 'Asia/Tokyo'
       - name: Generate pull request
@@ -65,7 +65,7 @@ jobs:
 
           milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
           milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"${HEAD_REF#release/}\")) | first | .number")
-          gh api -X PATCH repos/${{github.repository}}/milestones/${milestone_number} -f state=closed
+          gh api -X PATCH "repos/${{github.repository}}/milestones/$milestone_number" -f state=closed
         env:
           GITHUB_TOKEN: ${{github.token}}
           HEAD_REF: ${{github.event.pull_request.head.ref}}

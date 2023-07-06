@@ -22,20 +22,20 @@ jobs:
           app_id: ${{secrets.gh_app_id}}
           private_key: ${{secrets.gh_app_private_key}}
       - run: |
-          head_ref=${{github.head_ref}}
-          if [[ $head_ref == *"feat"* ]]; then
+          if [[ "$HEAD_REF" == *"feat"* ]]; then
             echo "HEADブランチに 'feat' が含まれています。"
             gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "feature"
-          elif [[ $head_ref == *"fix"* ]]; then
+          elif [[ "$HEAD_REF" == *"fix"* ]]; then
             echo "HEADブランチに 'fix' が含まれています。"
             gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "fix"
-          elif [[ $head_ref == *"test"* ]]; then
+          elif [[ "$HEAD_REF" == *"test"* ]]; then
             echo "HEADブランチに 'test' が含まれています。"
             gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "test"
-          elif [[ $head_ref == *"doc"* ]]; then
+          elif [[ "$HEAD_REF" == *"doc"* ]]; then
             echo "HEADブランチに 'doc' が含まれています。"
             gh -R "$GITHUB_REPOSITORY" pr edit "$PR_NUMBER" --add-label "documentation"
           fi
         env:
           GITHUB_TOKEN: ${{steps.generate_token.outputs.token}}
           PR_NUMBER: ${{github.event.pull_request.number}}
+          HEAD_REF: ${{github.head_ref}}

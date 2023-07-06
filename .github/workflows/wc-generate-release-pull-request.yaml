@@ -42,7 +42,7 @@ jobs:
           private_key: ${{secrets.gh_app_private_key}}
       - name: Set current datetime
         id: datetime
-        run: echo "CURRENT_DATETIME=$(date +"%Y-%m-%dT%H:%M:%S%z")" >> $GITHUB_OUTPUT
+        run: echo "CURRENT_DATETIME=$(date +"%Y-%m-%dT%H:%M:%S%z")" >> "$GITHUB_OUTPUT"
         env:
           TZ: 'Asia/Tokyo'
       - name: Check and Set pull request label options
@@ -52,26 +52,26 @@ jobs:
           # カンマで分割して配列に格納
           IFS=',' read -r -a labels <<< "$label_names"
 
-          pr_create_label_options=''
-          pr_edit_label_options=''
+          pr_create_label_options=()
+          pr_edit_label_options=()
           for label in "${labels[@]}"; do
               echo "$label"
               # 不要な先頭および末尾の空白を削除しつつ表示
               label_name=$(echo "$label" | awk '{$1=$1};1')
-              echo $label_name
-              if ! $(gh label list -R "$GITHUB_REPOSITORY" --json name | jq ". | any(.name == \"${label_name}\")"); then
+              echo "$label_name"
+              if ! gh label list -R "$GITHUB_REPOSITORY" --json name | jq ". | any(.name == \"${label_name}\")"; then
                 #=> ラベルが存在しなかった場合にはエラー表示
                 echo "::error title=${label_name} is not found::Please create a new label"
               fi
-              pr_create_label_options+="--label '${label_name}' "
-              pr_edit_label_options+="--add-label '${label_name}' "
+              pr_create_label_options+=(--label "$label_name")
+              pr_edit_label_options+=(--add-label "$label_name")
           done
 
-          echo $pr_create_label_options
-          echo "PR_CREATE_LABEL_OPTIONS=$pr_create_label_options" >> $GITHUB_OUTPUT
+          echo "${pr_create_label_options[@]}"
+          echo "PR_CREATE_LABEL_OPTIONS=${pr_create_label_options[*]}" >> "$GITHUB_OUTPUT"
 
-          echo $pr_edit_label_options
-          echo "PR_EDIT_LABEL_OPTIONS=$pr_edit_label_options" >> $GITHUB_OUTPUT
+          echo "${pr_edit_label_options[@]}"
+          echo "PR_EDIT_LABEL_OPTIONS=${pr_edit_label_options[*]}" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{github.token}}
       - name: Set pull request reviewers
@@ -81,39 +81,39 @@ jobs:
           # カンマで分割して配列に格納
           IFS=',' read -r -a reviewers <<< "$reviewer_names"
 
-          pr_create_reviewer_options=''
-          pr_edit_reviewer_options=''
+          pr_create_reviewer_options=()
+          pr_edit_reviewer_options=()
           for reviewer in "${reviewers[@]}"; do
               echo "$reviewer"
               # 不要な先頭および末尾の空白を削除しつつ表示
               reviewer_name=$(echo "$reviewer" | awk '{$1=$1};1')
-              echo $reviewer_name
+              echo "$reviewer_name"
               
-              pr_create_reviewer_options+="--reviewer '${reviewer_name}' "
-              pr_edit_reviewer_options+="--add-reviewer '${reviewer_name}' "
+              pr_create_reviewer_options+=(--reviewer "$reviewer_name")
+              pr_edit_reviewer_options+=(--add-reviewer "$reviewer_name")
           done
 
-          echo $pr_create_reviewer_options
-          echo "PR_CREATE_REVIEWER_OPTIONS=$pr_create_reviewer_options" >> $GITHUB_OUTPUT
+          echo "${pr_create_reviewer_options[@]}"
+          echo "PR_CREATE_REVIEWER_OPTIONS=${pr_create_reviewer_options[*]}" >> "$GITHUB_OUTPUT"
 
-          echo $pr_edit_reviewer_options
-          echo "PR_EDIT_REVIEWER_OPTIONS=$pr_edit_reviewer_options" >> $GITHUB_OUTPUT
+          echo "${pr_edit_reviewer_options[@]}"
+          echo "PR_EDIT_REVIEWER_OPTIONS=${pr_edit_reviewer_options[*]}" >> "$GITHUB_OUTPUT"
       - name: Generate pull request
         run: |
           set -eu
 
           ghcp -v
 
-          SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
+          SAME_PR_COUNT=$(gh pr list -B "$GITHUB_REF_NAME" -H "release/$RELEASE_VERSION" --json 'id' --jq '.[] | length')
           if [[ -z "$SAME_PR_COUNT" ]]; then
             #=> 同じブランチ名のプルリクエストがない場合はプルリクエストを新規作成する
             ghcp empty-commit \
-              -r $GITHUB_REPOSITORY \
-              -b release/$RELEASE_VERSION \
+              -r "$GITHUB_REPOSITORY" \
+              -b "release/$RELEASE_VERSION" \
               -m "chore: Open pull request for release $RELEASE_VERSION"
             gh pr create \
-              -B $GITHUB_REF_NAME \
-              -H release/$RELEASE_VERSION \
+              -B "$GITHUB_REF_NAME" \
+              -H "release/$RELEASE_VERSION" \
               --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" \
               --body "$CHANGELOG" \
               --milestone "$RELEASE_VERSION" \
@@ -121,8 +121,8 @@ jobs:
               ${{steps.set-reviewers.outputs.PR_CREATE_REVIEWER_OPTIONS}}
           else
             #=> 同じブランチ名のプルリクエストがある場合は該当のプルリクエストを編集する
-            SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER \
+            SAME_PR_NUMBER=$(gh pr list -B "$GITHUB_REF_NAME" -H "release/$RELEASE_VERSION" --json 'number' --jq '.[].number')
+            gh pr edit "$SAME_PR_NUMBER" \
               --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" \
               --body "$CHANGELOG" \
               --milestone "$RELEASE_VERSION" \
