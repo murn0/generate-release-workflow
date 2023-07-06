@@ -35,7 +35,8 @@ jobs:
       - name: Check bump level
         run: |
           set -eu
-          changelog=$(echo "${{inputs.changelog}}" | sed 's/\\/\\\\/g')
+
+          changelog="$(echo "${{inputs.changelog}}" | sed 's/\\/\\\\/g')"
           search_features="${{inputs.minor_title}}"
           search_breaking_changes="${{inputs.major_title}}"
 
@@ -51,7 +52,9 @@ jobs:
       - name: Set release version for output.
         id: set-version
         run: |
+          set -eu
+          
           svu
-          next_version=$(svu $level)
+          next_version="$(svu $level)"
           echo "RELEASE_VERSION=$next_version" >> $GITHUB_OUTPUT
           echo "::notice::Next release is $level update, version $next_version"
