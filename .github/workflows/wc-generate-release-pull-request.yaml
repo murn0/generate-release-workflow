@@ -68,10 +68,10 @@ jobs:
           done
 
           echo "${pr_create_label_options[@]}"
-          echo "PR_CREATE_LABEL_OPTIONS="${pr_create_label_options[@]}"" >> "$GITHUB_OUTPUT"
+          echo "PR_CREATE_LABEL_OPTIONS=${pr_create_label_options[*]}" >> "$GITHUB_OUTPUT"
 
           echo "${pr_edit_label_options[@]}"
-          echo "PR_EDIT_LABEL_OPTIONS="${pr_edit_label_options[@]}"" >> "$GITHUB_OUTPUT"
+          echo "PR_EDIT_LABEL_OPTIONS=${pr_edit_label_options[*]}" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{github.token}}
       - name: Set pull request reviewers
@@ -94,10 +94,10 @@ jobs:
           done
 
           echo "${pr_create_reviewer_options[@]}"
-          echo "PR_CREATE_REVIEWER_OPTIONS="${pr_create_reviewer_options[@]}"" >> $GITHUB_OUTPUT
+          echo "PR_CREATE_REVIEWER_OPTIONS=${pr_create_reviewer_options[*]}" >> "$GITHUB_OUTPUT"
 
           echo "${pr_edit_reviewer_options[@]}"
-          echo "PR_EDIT_REVIEWER_OPTIONS="${pr_edit_reviewer_options[@]}"" >> $GITHUB_OUTPUT
+          echo "PR_EDIT_REVIEWER_OPTIONS=${pr_edit_reviewer_options[*]}" >> "$GITHUB_OUTPUT"
       - name: Generate pull request
         run: |
           set -eu
