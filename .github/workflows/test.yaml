@@ -6,8 +6,9 @@ jobs:
   auto-add-label:
     uses: ./.github/workflows/wc-auto-add-label.yaml
     permissions: {}
-    if: |
-      github.event.pull_request.user.login != 'renovate[bot]'
+    if: >-
+      github.event.pull_request.user.login != 'renovate[bot]' &&
+      contains(fromJSON('["feat", "fix", "test", "doc"]'), github.head_ref)
     secrets:
       gh_app_id: ${{secrets.gh_app_id}}
       gh_app_private_key: ${{secrets.gh_app_private_key}}
