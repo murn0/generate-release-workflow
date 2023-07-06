@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       draft:
-        required: true
+        required: false
         default: false
         type: boolean
     secrets:
