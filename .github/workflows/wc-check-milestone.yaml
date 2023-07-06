@@ -30,11 +30,11 @@ jobs:
 
           milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
           #=> $RELEASE_VERSIONと同じタイトルのマイルストーンが存在しない場合は作成する
-          if ! echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\")"; then
+          if [ "$(echo "$milestones" | jq ". | any(.title == \"$RELEASE_VERSION\")")" = false ]; then
             gh api -X POST repos/${{github.repository}}/milestones -f title="$RELEASE_VERSION"
             #=> マイルストーンを新規作成した場合は$milestonesを更新（更新しないと下記でマイルストーン番号が取得できないため）
             milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
-          elif echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"; then
+          elif [ "$(echo "$milestones" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")")" = true ]; then
             #=> マイルストーンが存在するがcloseの場合は再度openする
             milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
             gh api -X PATCH repos/${{github.repository}}/milestones/"$milestone_number" -f state=open
