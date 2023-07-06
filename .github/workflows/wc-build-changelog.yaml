@@ -59,7 +59,7 @@ jobs:
       pull_requests: ${{steps.github_release.outputs.pull_requests}}
       LATEST_TAG: ${{steps.check-tag.outputs.LATEST_TAG}}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 0
       - name: Get latest tag
@@ -75,7 +75,7 @@ jobs:
       - name: Build Changelog
         id: github_release
         if: success()
-        uses: mikepenz/release-changelog-builder-action@v4.0.0-b02
+        uses: mikepenz/release-changelog-builder-action@342972d8fda7082778588387394cf150b9f7226f # v3.7.2
         with:
           fromTag: ${{steps.check-tag.outputs.LATEST_TAG}}
           toTag: ${{ github.ref }}
