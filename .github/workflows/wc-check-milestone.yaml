@@ -47,6 +47,8 @@ jobs:
           GITHUB_TOKEN: ${{github.token}}
           RELEASE_VERSION: ${{inputs.RELEASE_VERSION}}
   add-milestone:
+    needs:
+      - check-milestone
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
