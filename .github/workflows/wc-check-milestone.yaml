@@ -37,7 +37,7 @@ jobs:
           elif echo "${milestones}" | jq ". | any(.title == \"$RELEASE_VERSION\" and .state == \"closed\")"; then
             #=> マイルストーンが存在するがcloseの場合は再度openする
             milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
-            gh api -X PATCH repos/${{github.repository}}/milestones/${milestone_number} -f state="open"
+            gh api -X PATCH repos/${{github.repository}}/milestones/"$milestone_number" -f state=open
           fi
 
           milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"$RELEASE_VERSION\")) | first | .number")
