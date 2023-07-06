@@ -68,10 +68,10 @@ jobs:
           done
 
           echo "${pr_create_label_options[@]}"
-          echo "PR_CREATE_LABEL_OPTIONS=$pr_create_label_options" >> $GITHUB_OUTPUT
+          echo "PR_CREATE_LABEL_OPTIONS="${pr_create_label_options[@]}"" >> "$GITHUB_OUTPUT"
 
           echo "${pr_edit_label_options[@]}"
-          echo "PR_EDIT_LABEL_OPTIONS=$pr_edit_label_options" >> $GITHUB_OUTPUT
+          echo "PR_EDIT_LABEL_OPTIONS="${pr_edit_label_options[@]}"" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{github.token}}
       - name: Set pull request reviewers
@@ -87,7 +87,7 @@ jobs:
               echo "$reviewer"
               # 不要な先頭および末尾の空白を削除しつつ表示
               reviewer_name=$(echo "$reviewer" | awk '{$1=$1};1')
-              echo $reviewer_name
+              echo "$reviewer_name"
               
               pr_create_reviewer_options+=(--reviewer "$reviewer_name")
               pr_edit_reviewer_options+=(--add-reviewer "$reviewer_name")
