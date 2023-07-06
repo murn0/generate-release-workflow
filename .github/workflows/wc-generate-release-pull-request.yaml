@@ -104,16 +104,16 @@ jobs:
 
           ghcp -v
 
-          SAME_PR_COUNT=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'id' --jq '.[] | length')
+          SAME_PR_COUNT=$(gh pr list -B "$GITHUB_REF_NAME" -H "release/$RELEASE_VERSION" --json 'id' --jq '.[] | length')
           if [[ -z "$SAME_PR_COUNT" ]]; then
             #=> 同じブランチ名のプルリクエストがない場合はプルリクエストを新規作成する
             ghcp empty-commit \
-              -r $GITHUB_REPOSITORY \
-              -b release/$RELEASE_VERSION \
+              -r "$GITHUB_REPOSITORY" \
+              -b "release/$RELEASE_VERSION" \
               -m "chore: Open pull request for release $RELEASE_VERSION"
             gh pr create \
-              -B $GITHUB_REF_NAME \
-              -H release/$RELEASE_VERSION \
+              -B "$GITHUB_REF_NAME" \
+              -H "release/$RELEASE_VERSION" \
               --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" \
               --body "$CHANGELOG" \
               --milestone "$RELEASE_VERSION" \
@@ -121,8 +121,8 @@ jobs:
               ${{steps.set-reviewers.outputs.PR_CREATE_REVIEWER_OPTIONS}}
           else
             #=> 同じブランチ名のプルリクエストがある場合は該当のプルリクエストを編集する
-            SAME_PR_NUMBER=$(gh pr list -B $GITHUB_REF_NAME -H release/$RELEASE_VERSION --json 'number' --jq '.[].number')
-            gh pr edit $SAME_PR_NUMBER \
+            SAME_PR_NUMBER=$(gh pr list -B "$GITHUB_REF_NAME" -H "release/$RELEASE_VERSION" --json 'number' --jq '.[].number')
+            gh pr edit "$SAME_PR_NUMBER" \
               --title "$RELEASE_VERSION ${{steps.datetime.outputs.CURRENT_DATETIME}}" \
               --body "$CHANGELOG" \
               --milestone "$RELEASE_VERSION" \
