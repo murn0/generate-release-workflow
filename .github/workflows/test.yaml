@@ -35,6 +35,7 @@ jobs:
             renovate-config-validator:
               - renovate.json
               - .github/workflows/test.yaml
+              - .github/workflows/wc-renovate-config-validator.yaml
   
   ghalint:
     needs: path-filter
@@ -43,11 +44,11 @@ jobs:
     permissions: {}
 
   renovate-config-validator:
-    uses: suzuki-shunsuke/renovate-config-validator-workflow/.github/workflows/validate.yaml@3486167db0a31748bdd33f360388cbf9eb25a87a # v0.2.1
-    permissions:
-      contents: read
     needs: path-filter
     if: needs.path-filter.outputs.renovate-config-validator == 'true'
+    uses: ./.github/workflows/wc-renovate-config-validator.yaml
+    permissions:
+      contents: read
 
   status-check:
     needs:
