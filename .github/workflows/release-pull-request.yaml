@@ -53,6 +53,14 @@ on:
         required: false
         type: string
         default: 'release'
+      app_id_url:
+        required: false
+        type: string
+        default: "op://Github/uhto3hzapjcxicwm664wvh4zu4/AppID"
+      app_secret_url:
+        required: false
+        type: string
+        default: "op://Github/uhto3hzapjcxicwm664wvh4zu4/AppSecret"
   workflow_call:
     inputs:
       changelog_config_json:
@@ -108,11 +116,21 @@ on:
         description: "Specify the labels name to be associated with the pull request. e.g. Release, feature"
         required: false
         type: string
+      app_id_url:
+        description: "Specify the 1Password URL for the GitHub App ID"
+        required: false
+        type: string
+      app_secret_url:
+        description: "Specify the 1Password URL for the GitHub App Secret"
+        required: false
+        type: string
     secrets:
+      op_service_account_token:
+        required: false
       gh_app_id:
-        required: true
+        required: false
       gh_app_private_key:
-        required: true
+        required: false
 
 permissions: {}
 jobs:
@@ -150,7 +168,7 @@ jobs:
       - bump-version
       - check-milestone
     secrets:
-      op_service_account_token: ${{secrets.OP_SERVICE_ACCOUNT_TOKEN}}
+      op_service_account_token: ${{ secrets.op_service_account_token }}
     with:
       CHANGELOG_HEADER: >-
         [Pull Requests](https://github.com/${{github.repository}}/pulls?q=is%3Apr+milestone%3A${{needs.bump-version.outputs.RELEASE_VERSION}}) |
@@ -161,5 +179,5 @@ jobs:
       RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
       REVIEWERS: ${{inputs.reviewers}}
       LABELS: ${{inputs.labels}}
-      app_id_url: "op://Github/uhto3hzapjcxicwm664wvh4zu4/AppID"
-      app_secret_url: "op://Github/uhto3hzapjcxicwm664wvh4zu4/private_key"
+      app_id_url: ${{inputs.app_id_url}}
+      app_secret_url: ${{inputs.app_secret_url}}
