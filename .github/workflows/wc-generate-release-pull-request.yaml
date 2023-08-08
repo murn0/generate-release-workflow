@@ -17,11 +17,21 @@ on:
       LABELS:
         required: false
         type: string
+      app_id_url:
+        required: false
+        type: string
+        description: The Secret Reference URL for the AppID stored in 1Password
+      app_secret_url:
+        required: false
+        type: string
+        description: The Secret Reference URL for the AppSecret stored in 1Password
     secrets:
+      op_service_account_token:
+        required: false
       gh_app_id:
-        required: true
+        required: false
       gh_app_private_key:
-        required: true
+        required: false
 
 permissions: {}
 
@@ -34,12 +44,30 @@ jobs:
       - uses: aquaproj/aqua-installer@36dc5833b04eb63f06e3bb818aa6b7a6e6db99a9 # v2.1.2
         with:
           aqua_version: v2.10.1
+      - name: Load secrets
+        uses: 1password/load-secrets-action@d1a4e73495bde3551cf63f6c048588b8f734e21d # v1.3.1
+        if: ${{ inputs.app_id_url != '' && inputs.app_secret_url != '' }}
+        id: op-load-secret
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          APP_ID: ${{ inputs.app_id_url }}
+          APP_SECRET: ${{ inputs.app_secret_url }}
       - name: Generate token
         id: generate_token
         uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
         with:
-          app_id: ${{secrets.gh_app_id}}
-          private_key: ${{secrets.gh_app_private_key}}
+          app_id: >-
+            ${{
+              inputs.app_id_url != '' && fromJson(steps.op-load-secret.outputs.APP_ID).value ||
+              secrets.gh_app_id
+            }}
+          private_key: >-
+            ${{
+              inputs.app_secret_url != '' && fromJson(steps.op-load-secret.outputs.APP_SECRET).value ||
+              secrets.gh_app_private_key
+            }}
       - name: Set current datetime
         id: datetime
         run: echo "CURRENT_DATETIME=$(date +"%Y-%m-%dT%H:%M:%S%z")" >> "$GITHUB_OUTPUT"
