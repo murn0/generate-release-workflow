@@ -60,7 +60,7 @@ on:
       app_secret_url:
         required: false
         type: string
-        default: "op://Github/uhto3hzapjcxicwm664wvh4zu4/AppSecret"
+        default: "op://Github/uhto3hzapjcxicwm664wvh4zu4/private_key"
   workflow_call:
     inputs:
       changelog_config_json:
