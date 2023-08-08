@@ -51,7 +51,7 @@ jobs:
         with:
           export-env: false
         env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.op_service_account_token }}
           APP_ID: ${{ inputs.app_id_url }}
           APP_SECRET: ${{ inputs.app_secret_url }}
       - name: Generate token
