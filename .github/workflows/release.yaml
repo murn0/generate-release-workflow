@@ -16,6 +16,7 @@ jobs:
       github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     with:
       draft: true
+      app_id_url: "op://Github/uhto3hzapjcxicwm664wvh4zu4/AppID"
+      app_secret_url: "op://Github/uhto3hzapjcxicwm664wvh4zu4/private_key"
     secrets:
-      gh_app_id: ${{secrets.GH_APP_ID}}
-      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
+      op_service_account_token: ${{secrets.OP_SERVICE_ACCOUNT_TOKEN}}

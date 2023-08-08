@@ -150,8 +150,7 @@ jobs:
       - bump-version
       - check-milestone
     secrets:
-      gh_app_id: ${{secrets.gh_app_id}}
-      gh_app_private_key: ${{secrets.gh_app_private_key}}
+      op_service_account_token: ${{secrets.OP_SERVICE_ACCOUNT_TOKEN}}
     with:
       CHANGELOG_HEADER: >-
         [Pull Requests](https://github.com/${{github.repository}}/pulls?q=is%3Apr+milestone%3A${{needs.bump-version.outputs.RELEASE_VERSION}}) |
@@ -162,3 +161,5 @@ jobs:
       RELEASE_VERSION: ${{needs.bump-version.outputs.RELEASE_VERSION}}
       REVIEWERS: ${{inputs.reviewers}}
       LABELS: ${{inputs.labels}}
+      app_id_url: "op://Github/uhto3hzapjcxicwm664wvh4zu4/AppID"
+      app_secret_url: "op://Github/uhto3hzapjcxicwm664wvh4zu4/private_key"
