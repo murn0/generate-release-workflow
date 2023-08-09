@@ -45,12 +45,12 @@ jobs:
         with:
           app_id: >-
             ${{
-              inputs.app_id_url != '' && fromJson(steps.op-load-secret.outputs.APP_ID).value ||
+              inputs.app_id_url != '' && steps.op-load-secret.outputs.APP_ID ||
               secrets.gh_app_id
             }}
           private_key: >-
             ${{
-              inputs.app_secret_url != '' && fromJson(steps.op-load-secret.outputs.APP_SECRET).value ||
+              inputs.app_secret_url != '' && steps.op-load-secret.outputs.APP_SECRET ||
               secrets.gh_app_private_key
             }}
       - name: Set current datetime
