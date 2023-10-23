@@ -75,7 +75,7 @@ jobs:
       - name: Build Changelog
         id: github_release
         if: success()
-        uses: mikepenz/release-changelog-builder-action@342972d8fda7082778588387394cf150b9f7226f # v3.7.2
+        uses: mikepenz/release-changelog-builder-action@162edb95b1a57c11bf799b62984a91983395c738 # v3.7.3
         with:
           fromTag: ${{steps.check-tag.outputs.LATEST_TAG}}
           toTag: ${{ github.ref }}
