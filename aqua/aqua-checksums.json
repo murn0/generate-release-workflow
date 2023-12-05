@@ -1,28 +1,28 @@
 {
   "checksums": [
     {
-      "id": "github_release/github.com/caarlos0/svu/v1.11.0/svu_1.11.0_darwin_all.tar.gz",
-      "checksum": "4B9C86E670626964F6D0C7E1ACA5CC2972E060914D604462EC1BBED0D3342C6C",
+      "id": "github_release/github.com/caarlos0/svu/v1.12.0/svu_1.12.0_darwin_all.tar.gz",
+      "checksum": "19ABE5CC933BFCEAEABAF6A6F25EE43BC26E9D32C643CC0BBD90AC351FE136FE",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/caarlos0/svu/v1.11.0/svu_1.11.0_linux_amd64.tar.gz",
-      "checksum": "4D79AB14D610A574827734813E40E0DEDBFFD4D48E5CECE1FA5BD7460049B645",
+      "id": "github_release/github.com/caarlos0/svu/v1.12.0/svu_1.12.0_linux_amd64.tar.gz",
+      "checksum": "468469E8A319371A561AF2E1F03B979A2269943E6D76A03C3518D4BEA898294E",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/caarlos0/svu/v1.11.0/svu_1.11.0_linux_arm64.tar.gz",
-      "checksum": "379E34041576B4EC49969784E084F26003C4748A083F0CB553BFE1543E196865",
+      "id": "github_release/github.com/caarlos0/svu/v1.12.0/svu_1.12.0_linux_arm64.tar.gz",
+      "checksum": "2C659CFAF85672D2C6673362BD18D6461E49C409CD6E3E31FBE807DE0E8036BE",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/caarlos0/svu/v1.11.0/svu_1.11.0_windows_amd64.tar.gz",
-      "checksum": "B3B06C127A1B7C539DBBB6AA69DD9D177143B815554A9F4C037AD6A707399A2A",
+      "id": "github_release/github.com/caarlos0/svu/v1.12.0/svu_1.12.0_windows_amd64.tar.gz",
+      "checksum": "696718AE3EF9146AB6794A2027600B58D7E15B41C003ADF91EC534792D5D8DF3",
       "algorithm": "sha256"
     },
     {
-      "id": "github_release/github.com/caarlos0/svu/v1.11.0/svu_1.11.0_windows_arm64.tar.gz",
-      "checksum": "5E709BA20FA212C9CB672FEF499012A3048F9FF83DEB3098140BDAFE3C0D597C",
+      "id": "github_release/github.com/caarlos0/svu/v1.12.0/svu_1.12.0_windows_arm64.tar.gz",
+      "checksum": "687D5BC02CDECA7F3B0BCEBAF913E0A6A967C99A344720508776F0965D9B8901",
       "algorithm": "sha256"
     },
     {
